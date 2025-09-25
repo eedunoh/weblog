@@ -56,6 +56,15 @@ resource "aws_security_group" "ec2_sg" {
     # cidr_blocks = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb_sg.id]  # Allow only traffic from ALB
   }
+
+    ingress {
+    description = "Allow HTTPS traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    # cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb_sg.id]  # Allow only traffic from ALB
+  }
   
   ingress {
     description = "Allow SSH traffic"

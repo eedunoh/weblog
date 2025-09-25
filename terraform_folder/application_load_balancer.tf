@@ -23,7 +23,7 @@ resource "aws_lb_target_group" "alb_tg" {
    health_check {
     path                = "/health"
     interval            = 30    # The ALB performs a health check every 30 seconds.
-    timeout             = 15    # The ALB waits 5 seconds for a response before marking the check as failed.
+    timeout             = 5     # The ALB waits 5 seconds for a response before marking the check as failed.
     healthy_threshold   = 2      # The target (EC2 instance) must pass the health check 2 times in a row to be marked as healthy.
     unhealthy_threshold = 4      # The target must fail the health check 2 times in a row to be marked as unhealthy.
     }

@@ -43,6 +43,10 @@ jobs:
 
       # Stage 5: Build Docker Image
       - name: Build Docker Image
+
+      # This condition is necessary because right now, Docker build, push and terraform plan/apply are in the same job with terraform destroy. 
+      # That means on manual runs with destroy=true, it will still run the pre-destroy steps like docker-push and terraform-apply before running terraform destroy, and that is not ideal.
+        if: github.event.inputs.destroy != 'true'
         run: |
           cd app_folder
           docker build -t $IMAGE_NAME:$IMAGE_TAG .
@@ -51,6 +55,7 @@ jobs:
 
       # Stage 6: Login to DockerHub
       - name: Login to DockerHub
+        if: github.event.inputs.destroy != 'true'
         uses: docker/login-action@v2    
         #This is a reusable package (like plugins or modules) that someone has written and published on the GitHub Marketplace. 
         #docker/login-action@v2 → An action by Docker Inc. that logs in to Docker Hub (or any registry). It uses your stored secrets (DOCKER_USERNAME, DOCKER_PASSWORD) to authenticate before you push/pull images.
@@ -63,6 +68,7 @@ jobs:
 
       # Stage 7: Push Image to DockerHub
       - name: Push Image to DockerHub
+        if: github.event.inputs.destroy != 'true'
         run: |
           docker push $IMAGE_NAME:$IMAGE_TAG
       
@@ -81,6 +87,7 @@ jobs:
 
       # Stage 9: Configure Terraform
       - name: Configure AWS credentials
+        if: github.event.inputs.destroy != 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -90,6 +97,7 @@ jobs:
 
       # Stage 10: Terraform Init And Plan 
       - name: Terraform Init And Plan
+        if: github.event.inputs.destroy != 'true'
         run: |
             cd $TERRAFORM_DIR
             terraform init
@@ -104,8 +112,6 @@ jobs:
       - name: Terraform Apply
 
       # Manual trigger with destroy=true → Skips Apply → Destroys infra.
-      # This condition is necessary because right now, both Terraform Apply and Terraform Destroy are in the same job. 
-      # That means on manual runs with destroy=true, it will still run the Apply step before Destroy, and that is not ideal.
         if: github.event.inputs.destroy != 'true'
         run: |
           cd $TERRAFORM_DIR

@@ -2,7 +2,7 @@ resource "aws_autoscaling_group" "weblog_asg" {
   name = "weblog_auto_scaling"
   vpc_zone_identifier = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id, aws_subnet.private_subnet_3.id]
   desired_capacity   = 1
-  max_size           = 4
+  max_size           = 3
   min_size           = 1
 
   mixed_instances_policy {
