@@ -1,6 +1,6 @@
 data "aws_acm_certificate" "issued_cert" {  # already created and issued by AWS
-  domain      = "builtbyedunoh.com"
-  types       = ["AMAZON_ISSUED"]
+  domain      = "*.builtbyedunoh.com"
+  types       = ["ISSUED"]
   most_recent = true
 }
 
