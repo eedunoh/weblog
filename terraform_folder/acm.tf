@@ -1,8 +1,13 @@
 data "aws_acm_certificate" "issued_cert" {
-  domain      = "builtbyedunoh.com"
+  domain      = "*.builtbyedunoh.com"
   statuses    = ["ISSUED"]
   types       = ["IMPORTED"]
   most_recent = true
+
+
+  tags = {
+    name = "builtbyedunoh.com"
+  }
 }
 
 
