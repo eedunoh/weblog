@@ -87,7 +87,6 @@ jobs:
 
       # Stage 9: Configure Terraform
       - name: Configure AWS credentials
-        if: github.event.inputs.destroy != 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -97,7 +96,6 @@ jobs:
 
       # Stage 10: Terraform Init And Plan 
       - name: Terraform Init And Plan
-        if: github.event.inputs.destroy != 'true'
         run: |
             cd $TERRAFORM_DIR
             terraform init
