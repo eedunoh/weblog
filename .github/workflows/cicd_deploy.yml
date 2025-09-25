@@ -79,20 +79,24 @@ jobs:
         #This is an input to the action. It tells setup-terraform which Terraform version to install on the runner.
 
 
+      # Stage 9: Configure Terraform
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
 
-      # Stage 9: Terraform Init And Plan 
+
+      # Stage 10: Terraform Init And Plan 
       - name: Terraform Init And Plan
         run: |
             cd $TERRAFORM_DIR
             terraform init
             terraform plan -out=$TF_PLAN_FILE
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      
 
 
-      # Stage 10: Terraform Apply 
+      # Stage 11: Terraform Apply 
 
       # Every time you git push to main, the workflow is triggered. It checks out your repo, sets up Terraform, and authenticates to AWS. Runs terraform init, plan, and then automatically applies infra. 
       # No manual click needed. Deployment is continuous.
@@ -108,8 +112,7 @@ jobs:
           terraform apply -auto-approve $TF_PLAN_FILE
     
 
-
-      # Stage 11: Destroy Infra
+      # Stage 12: Destroy Infra
       - name: Terraform Destroy
 
       # It only runs the step if a workflow input variable named destroy equals "true". That input comes from workflow_dispatch, which lets you trigger workflows manually and pass parameters.
