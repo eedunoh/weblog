@@ -15,6 +15,40 @@ resource  "aws_vpc" "main" {
   }
 }
 
+# Before you run the pipeline via auto/manual push, make sure you create an S3 bucket to store terraform state files and dynamodb_table for state lock. The name Should match
+# Use these code to quickly create the S3 and dynamodb_table
+
+# S3 (copy the code below):
+
+# aws s3api create-bucket \
+#   --bucket weblog-terraform-state-bucket-fyi \
+#   --region eu-north-1 \
+#   --create-bucket-configuration LocationConstraint=eu-north-1
+
+# DynamoDB (copy the code below):
+
+# aws dynamodb create-table \
+#   --table-name weblog-terraform-locks \
+#   --attribute-definitions AttributeName=LockID,AttributeType=S \
+#   --key-schema AttributeName=LockID,KeyType=HASH \
+#   --billing-mode PAY_PER_REQUEST
+
+
+# Confirm the S3 and DynamoDB table are created before you push files to the Git repository
+
+
+# For us to efficiently implement CI/CD, we need a remote backend. 
+terraform {
+  backend "s3" {
+    bucket         = "weblog-terraform-state-bucket-fyi"          # must exist
+    key            = "blog/terraform.tfstate"                     # path inside bucket
+    region         = "eu-north-1"                                 # your AWS region
+    dynamodb_table = "weblog-terraform-locks"                      # must exist
+    encrypt        = true
+  }
+}
+
+
 
 # We create three public subnets for three availability zones in our region (within the same VPC)
 
