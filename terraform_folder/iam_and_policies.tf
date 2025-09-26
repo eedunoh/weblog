@@ -1,6 +1,5 @@
 
 # Grants permissions to the application in ec2 to access AWS services like SSM Parameter Store.
-
 resource "aws_iam_role" "ec2_instance_role" {
   name = "EC2InstanceRole"
 
@@ -16,9 +15,7 @@ resource "aws_iam_role" "ec2_instance_role" {
 
 
 
-
 # Policy to be attached to the role above.
-
 resource "aws_iam_policy" "ssm_read_access" {
   name        = "ssmReadAccess"
   description = "Allows EC2 instance to read SSM parameters"
@@ -45,9 +42,7 @@ resource "aws_iam_policy" "ssm_read_access" {
 
 
 
-
 # attching ssm_read_access policy to the ec2 instance role
-
 resource "aws_iam_role_policy_attachment" "ec2_instance_policy_attachment" {
   role       = aws_iam_role.ec2_instance_role.name
   policy_arn = aws_iam_policy.ssm_read_access.arn
@@ -55,8 +50,15 @@ resource "aws_iam_role_policy_attachment" "ec2_instance_policy_attachment" {
 
 
 
-# Creating an iam instance profile for the ec2 instance role. This will be attched in instance profile section of the launch template.
+# Attach ManageInstanceCore policy to the ec2 instance role. This policy is needed to allow remote access to a private subnet ec2 instance via SSM
+resource "aws_iam_role_policy_attachment" "ssm_managed_instance" {
+  role       = aws_iam_role.ec2_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
+
+
+# Creating an iam instance profile for the ec2 instance role. This will be attched in instance profile section of the launch template.
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "EC2InstanceProfile"
   role = aws_iam_role.ec2_instance_role.name
