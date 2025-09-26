@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "weblog_asg" {
   # Attach to Load Balancer (ALB) and turn on health checks
   target_group_arns     = [aws_lb_target_group.alb_tg.arn]    # Use "target_group_arns" if using ALB
   health_check_type      = "ELB"             # Ensures ELB performs health checks
-  health_check_grace_period = 600            # Wait 10 mins before marking unhealthy. The reason for this is that the image may be large in size and would need more time to initialize. we dont want the ALB marking it unhealthy while its initializing.
+  health_check_grace_period = 900            # Wait 15 mins before marking unhealthy. The reason for this is that the image may be large in size and would need more time to initialize. we dont want the ALB marking it unhealthy while its initializing.
 }
 
 
