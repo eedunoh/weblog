@@ -1,4 +1,4 @@
-# CloudWatch Alarm: CPU >= 5 percent
+# CloudWatch Alarm: CPU >= 5%
 resource "aws_cloudwatch_metric_alarm" "cpu_gte_5" {
   alarm_name          = "cpu_gte_5"
   comparison_operator = "GreaterThanOrEqualToThreshold"
